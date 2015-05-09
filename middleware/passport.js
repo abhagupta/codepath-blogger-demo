@@ -18,8 +18,10 @@ module.exports = (app) => {
     //     });
     // });
 
-   passport.serializeUser(nodeifyit(async (user) => user._id))
-   passport.deserializeUser(nodeifyit(async (id) => {return await User.promise.findById(id)}))
+    passport.serializeUser(nodeifyit(async(user) => user._id))
+    passport.deserializeUser(nodeifyit(async(id) => {
+        return await User.promise.findById(id)
+    }))
 
 
     passport.use(new LocalStrategy({
@@ -27,29 +29,44 @@ module.exports = (app) => {
         failureFlash: true
 
     }, nodeifyit(async(username, password) => {
-            let user 
-			console.log(username + " , " + password)
-			console.log(username.indexOf('@'))
-             if (username.indexOf('@') >=0) {
-            	let email = username.toLowerCase()
-                user = await User.promise.findOne({email})
-                console.log("logign using email")
-            } else {
-            	
-    			let regexp = new RegExp(username, 'i')
-                user = await User.promise.findOne({
-                    username: {$regex: regexp}
-                })
-                console.log("logign using username")
-                console.log(user)
+        let user
+        console.log(username + " , " + password)
+        console.log(username.indexOf('@'))
+        let email
+        if (username.indexOf('@') >= 0) {
 
-            }
-          
-        if (!user || username != user.username) {
-            return [false, {
-                message: 'Invalid username'
-            }]
+            email = username.toLowerCase()
+            user = await User.promise.findOne({
+                email
+            })
+        } else {
+
+            let regexp = new RegExp(username, 'i')
+            user = await User.promise.findOne({
+                username: {
+                    $regex: regexp
+                }
+            })
+            console.log("User foudn :" + user)
+
         }
+
+        if (!email) {
+            if (!user || username != user.username) {
+                return [false, {
+                    message: 'Invalid username'
+                }]
+            }
+        } else {
+            if (!user || email != user.email) {
+                return [false, {
+                    message: 'Invalid email'
+                }]
+            }
+        }
+
+
+
         if (!await user.validatePassword(password)) {
             return [false, {
                 message: 'Invalid password'
@@ -60,54 +77,64 @@ module.exports = (app) => {
         spread: true
     })))
 
-/*
- * Passport local strategy for signup
- */
+    /*
+     * Passport local strategy for signup
+     */
 
-passport.use('local-signup', new LocalStrategy({
-    usernameField: 'email',
-    failureFlash: true,
-    passReqToCallback: true
-}, nodeifyit(async(req, email, password) => {
+    passport.use('local-signup', new LocalStrategy({
+        usernameField: 'email',
+        failureFlash: true,
+        passReqToCallback: true
+    }, nodeifyit(async(req, email, password) => {
 
-	/* Do email query */
-    email = (email || '').toLowerCase()
-    if (await User.promise.findOne({email})){
-    	return [false, "That email is already taken."]
-    }
-     
-    /* set username, title, description from request body to same name parameters*/
-    let {username,title, description} = req.body
+        /* Do email query */
+        email = (email || '').toLowerCase()
+        if (await User.promise.findOne({
+                email
+            })) {
+            return [false, "That email is already taken."]
+        }
 
-    /* Do username query*/ 
-    let regexp = new RegExp(username, 'i')
-    let query = {username:{$regex: regexp}}
+        /* set username, title, description from request body to same name parameters*/
+        let {
+            username, title, description
+        } = req.body
 
-    if(await User.promise.findOne(query)){
-    	 return [false, {
-            message: 'That username is already taken. '
-        }]
-    }
-     
+        /* Do username query*/
+        let regexp = new RegExp(username, 'i')
+        let query = {
+            username: {
+                $regex: regexp
+            }
+        }
 
-    let user = new User()
-    user.email = email
-    user.username = username
-    user.blogTitle = title
-    user.blogDescription = description
+        if (await User.promise.findOne(query)) {
+            return [false, {
+                message: 'That username is already taken. '
+            }]
+        }
 
-    user.password = password
-    try {
-    	return await user.save()
 
-    }catch(e){
-    	console.log(util.inspect(e))
-    	return [false,{message:e.message}]
-    }
+        let user = new User()
+        user.email = email
+        user.username = username
+        user.blogTitle = title
+        user.blogDescription = description
 
-    return await user.save()
-}, {
-    spread: true
-})))
+        user.password = password
+        try {
+            return await user.save()
+
+        } catch (e) {
+            console.log(util.inspect(e))
+            return [false, {
+                message: e.message
+            }]
+        }
+
+        return await user.save()
+    }, {
+        spread: true
+    })))
 
 }
