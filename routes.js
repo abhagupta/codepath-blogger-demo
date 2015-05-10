@@ -14,6 +14,10 @@ module.exports = (app) => {
         res.render('index.ejs');
     })
 
+    /*
+    * Routes for /login
+    */
+
     app.get('/login', function(req, res) {
         res.render('login.ejs', {
             message: req.flash('error')
@@ -25,6 +29,10 @@ module.exports = (app) => {
         failureRedirect: '/login',
         failureFlash: true
     }))
+
+    /*
+    * Routes for /signup
+    */
 
     app.get('/signup', function(req, res) {
         res.render('signup.ejs', {
@@ -38,12 +46,22 @@ module.exports = (app) => {
         failureFlash: true
     }))
 
+    /*
+    * Routes for /profile
+    */
+
     //TO DO : Make sure isLogedIn is called
 
     app.get('/profile', (req, res) => res.render('profile.ejs', {
+
         user: req.user,
+        posts: ["Post 1", "Post 2", "Post 3"],
         message: req.flash('error')
     }))
+
+    /*
+    * Routes for /post/:postId
+    */
 
     app.get('/post/:postId?', then( async (req, res) =>  {
     	let postId = req.params.postId
@@ -97,6 +115,17 @@ module.exports = (app) => {
 
     }))
 
+   /*
+   * Routes for /blog
+   */
+
+
+
+
+
+/*  
+ *Logout
+*/
     app.get('/logout', function(req, res) {
         req.logout();
         res.redirect('/');

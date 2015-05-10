@@ -33,14 +33,14 @@
 
         <div class="form-group">
             <label>Image</label>
-            <% if (post.image) { %>
+            <% if (post.image.length > 0) {  %>
                 <img src="<%= image %>" style="height: 200px; width:200px"/>
             <% } %>
             <input type="file" class="form-control" name="image">
         </div>
 
        
-        <button type="submit" class="btn btn-warning btn-lg" name="signup" ><%= verb %> Post</button>
+        <button type="submit" class="btn btn-warning btn-lg" name="post" ><%= verb %> Post</button>
     </form>
 
     <hr>
