@@ -1,0 +1,51 @@
+<!doctype html>
+<html>
+<head>
+    <title>Authenticator</title>
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.0.2/css/bootstrap.min.css">
+    <link rel="stylesheet" href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.min.css">
+    <style>
+        body         { padding-top:80px; }
+    </style>
+</head>
+<body>
+<div class="container">
+	<div class="col-sm-6 col-sm-offset-3">
+	
+    <h1><span class="fa fa-sign-in"></span><%= blogTitle %> </h1>
+	
+    <div class="page-header text-center">
+
+                <ul>
+                    <% for(var i=0; i<posts.length; i++) {%>
+                       <li><% if (posts[i].image && posts[i].image.data.length > 0) {  %>
+                                <img src="/Users/agupt13/Downloads/Aditi_prom.jpg" style="height: 50px; width:50px"/>
+                            <% } %>
+                       <%= posts[i].title %>
+                             <div class="btn-group">
+                              <a class="btn" href="/post/<%= posts[i].id %>">
+                                Edit
+                              </a>
+                              <a class="btn"href="/deletePost/<%= posts[i].id %>">
+                                Delete
+                              </a>
+                              <!--TO DO  creating and update dates-->
+                             
+                            </div>
+                       </li>
+                    <% } %>
+                </ul>
+        
+       
+
+
+        <a href="/logout" class="btn btn-default btn-sm">Logout</a>
+        <a href="/post" class="btn btn-default btn-sm">Create Post</a>
+    </div>
+
+    <hr>
+
+</div>
+
+</body>
+</html>

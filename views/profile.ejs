@@ -35,12 +35,41 @@
 
                 </p>
 
-                    
+                <h4><span class="fa fa-laptop"></span> Posts</h4>  
                 <ul>
                     <% for(var i=0; i<posts.length; i++) {%>
-                       <li><%= posts[i] %></li>
+                       <li><% if (posts[i].image && posts[i].image.data.length > 0) {  %>
+                                <img src="/Users/agupt13/Downloads/Aditi_prom.jpg" style="height: 50px; width:50px"/>
+                            <% } %>
+                       <%= posts[i].title %>
+                             <div class="btn-group">
+                              <a class="btn" href="/post/<%= posts[i].id %>">
+                                Edit
+                              </a>
+                              <a class="btn"href="/deletePost/<%= posts[i].id %>">
+                                Delete
+                              </a>
+                              <!--TO DO  creating and update dates-->
+                             
+                            </div>
+                       </li>
                     <% } %>
                 </ul>
+
+                <h4><span class="fa fa-laptop"></span> Comments</h4>
+
+                 <ul>
+                    <% for(var i=0; i<posts.length; i++) {
+                        for(var j=0; j<posts[i].comments.length;j++){ %>
+                       <li>
+                           <%= posts[i].comments[j] %> 
+                            <a class="btn" href="/post/<%= posts[i].id %>">
+                                Related Post
+                            </a>
+                       </li>
+                    <% }} %>
+                </ul>
+
                 
         </div>
 
