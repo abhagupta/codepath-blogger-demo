@@ -136,6 +136,9 @@ module.exports = (app) => {
         }] = await new multiparty.Form().promise.parse(req)
         post.title = title
         post.content = content
+        post.userId = req.user._id
+        post.image.data = await fs.promise.readFile(file.path)
+        post.image.contentType = file.headers['content-type']
         await post.save()
 
 
@@ -206,7 +209,7 @@ module.exports = (app) => {
         await post.save()
         res.redirect(req.get('referer'))
 
-       // res.redirect('/blog/' + encodeURI(req.user.blogTitle))
+        // res.redirect('/blog/' + encodeURI(req.user.blogTitle))
         return
 
     }))
@@ -219,4 +222,3 @@ module.exports = (app) => {
         res.redirect('/');
     });
 }
-
