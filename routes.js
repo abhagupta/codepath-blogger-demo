@@ -50,13 +50,7 @@ module.exports = (app) => {
      * Routes for /profile
      */
 
-    //TO DO : Make sure isLogedIn is called
-
-    app.get('/profile', then(async(req, res) => {
-        let post1 = new Post()
-        let post2 = new Post()
-        post1.title = "Post 1 title"
-        post2.title = "Post 2 title"
+    app.get('/profile', isLoggedIn, then(async(req, res) => {
 
         let posts
         let userId = req.user._id
@@ -65,10 +59,15 @@ module.exports = (app) => {
             userId
         })
 
-        console.log(posts)
+        for (let i = 0; i < posts.length; i++) {
+            if (posts[i].image) {
+                let datauri = new DataUri
+                let image = datauri.format('.' + posts[i].image.contentType.split('/').pop(), posts[i].image.data)
+                posts[i].displayImage = `data:${posts[i].image.contentType};base64,${image.base64}`
+            }
+        }
 
         res.render('profile.ejs', {
-
             user: req.user,
             posts: posts,
             message: req.flash('error')
@@ -81,10 +80,12 @@ module.exports = (app) => {
 
     app.get('/post/:postId?', then(async(req, res) => {
         let postId = req.params.postId
+
         if (!postId) {
             res.render('post.ejs', {
                 post: {},
                 verb: 'Create'
+
             })
             return
         }
@@ -115,20 +116,14 @@ module.exports = (app) => {
             post.title = title
             post.content = content
             post.userId = req.user._id
-            post.comments = [{
-                "content": "this is good",
-                "username": "trsrts",
-                "date": "05/11/2015"
-            }]
-            console.log("During save :" + req.user.blogTitle)
             post.image.data = await fs.promise.readFile(file.path)
             post.image.contentType = file.headers['content-type']
             await post.save()
-
-
             res.redirect('/blog/' + encodeURI(req.user.blogTitle))
             return
         }
+
+        // Edit Post
 
         let post = await Post.promise.findById(postId)
         if (!post) res.send(404, 'Not Found')
@@ -163,22 +158,58 @@ module.exports = (app) => {
 
     app.get('/blog/:blogId?', then(async(req, res) => {
         let blogTitle = req.params.blogId
-        //get all the posts by this user
-       
-        let userByBlogTitle = await User.promise.findOne({'blogTitle':blogTitle})
+            //get all the posts by this user
+
+        let userByBlogTitle = await User.promise.findOne({
+            'blogTitle': blogTitle
+        })
 
         // now get all the posts created by this user
-        console.log("User Id :" + userByBlogTitle._id)
         let userId = userByBlogTitle._id
-        let postsByThisUser  = await Post.promise.find({'userId': userId})
-         console.log(postsByThisUser)
+        let postsByThisUser = await Post.promise.find({
+            'userId': userId
+        })
+        for (let i = 0; i < postsByThisUser.length; i++) {
+            if (postsByThisUser[i].image) {
+                let datauri = new DataUri
+                let image = datauri.format('.' + postsByThisUser[i].image.contentType.split('/').pop(), postsByThisUser[i].image.data)
+                postsByThisUser[i].displayImage = `data:${postsByThisUser[i].image.contentType};base64,${image.base64}`
+            }
+        }
         res.render('blog.ejs', {
             blogTitle: userByBlogTitle.blogTitle,
-            posts : postsByThisUser
+            posts: postsByThisUser
         })
     }))
 
+    /*
+     *  Routes for /comment
+     */
 
+
+    app.post('/addComment/:postId', isLoggedIn, then(async(req, res) => {
+        let postId = req.params.postId
+        let post = await Post.promise.findById(postId)
+        if (!post) res.send(404, 'Not Found')
+
+        let comment = req.body.comment
+        console.log('Comment : ' + comment)
+
+        let newComment = {
+            "content": comment,
+            "username": req.user.username,
+            "date": Date()
+        }
+
+        post.comments.push(newComment)
+
+        await post.save()
+        res.redirect(req.get('referer'))
+
+       // res.redirect('/blog/' + encodeURI(req.user.blogTitle))
+        return
+
+    }))
 
     /*  
      *Logout
@@ -187,11 +218,5 @@ module.exports = (app) => {
         req.logout();
         res.redirect('/');
     });
-
-
 }
 
-function isLoggedIn(req, res, next) {
-    if (req.isAuthenticated()) return next()
-    res.redirect('/')
-}

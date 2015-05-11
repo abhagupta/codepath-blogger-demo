@@ -14,36 +14,44 @@
 	
     <h1><span class="fa fa-sign-in"></span><%= blogTitle %> </h1>
 	
-    <div class="page-header text-center">
+    <div class="page-header">
 
                 <ul>
                     <% for(var i=0; i<posts.length; i++) {%>
-                       <li><% if (posts[i].image && posts[i].image.data.length > 0) {  %>
-                                <img src="/Users/agupt13/Downloads/Aditi_prom.jpg" style="height: 50px; width:50px"/>
+                      <li><h4>  <%= posts[i].title %> </h4>
+                       <hr>
+                        <p>  <%= posts[i].content %> </p>
+                       <% if (posts[i].image && posts[i].image.data.length > 0) {  %>
+                               <img src="<%= posts[i].displayImage %>" style="height: 400px; width:400px"/>
                             <% } %>
-                       <%= posts[i].title %>
-                             <div class="btn-group">
-                              <a class="btn" href="/post/<%= posts[i].id %>">
-                                Edit
-                              </a>
-                              <a class="btn"href="/deletePost/<%= posts[i].id %>">
-                                Delete
-                              </a>
-                              <!--TO DO  creating and update dates-->
+                        <h5>
+                        Comments
+                        </h5>
+                         <% for(var j=posts[i].comments.length-1; j>=0; j--) {  %>
+                             <span><%= posts[i].comments[j].content %></span> <br>
+                             <span>  <%= posts[i].comments[j].username %> </span> <br>
+                            <span>  <%= posts[i].comments[j].date %> </span> <hr>
+
                              
-                            </div>
+                         <%}%>    
+                       
+                       
+                       <h5>Add New Comment </h5>
+                            <form  action="/addComment/<%= posts[i]._id %>" method="post" >
+                                <!-- <textarea class="form-control" rows="3" id="comment"></textarea> -->
+                                  <input type="textarea" class="form-control" name="comment" value="">
+                                 <button type="submit" class="btn btn-warning btn-sm" name="postComment" > Save</button>
+                            </form>
+                             
+                              <!--TO DO  creating and update dates-->
+                            
+                           
                        </li>
                     <% } %>
                 </ul>
-        
-       
 
-
-        <a href="/logout" class="btn btn-default btn-sm">Logout</a>
-        <a href="/post" class="btn btn-default btn-sm">Create Post</a>
     </div>
 
-    <hr>
 
 </div>
 
