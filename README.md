@@ -2,7 +2,7 @@
 
 This is a basic Blogger clone to create a blog with comments.
 
-Time spent: `14`
+Time spent: `16 hrs`
 
 **To run:**
 
