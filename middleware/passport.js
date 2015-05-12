@@ -30,7 +30,9 @@ module.exports = (app) => {
 
     }, nodeifyit(async(username, password) => {
         let user
-        le (username.indexOf('@') >= 0) {
+       
+        let email
+        if (username.indexOf('@') >= 0) {
 
             email = username.toLowerCase()
             user = await User.promise.findOne({
@@ -46,8 +48,7 @@ module.exports = (app) => {
             })
 
         }
-t email
-        if
+
         if (!email) {
             if (!user || username != user.username) {
                 return [false, {
