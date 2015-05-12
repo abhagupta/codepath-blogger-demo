@@ -41,7 +41,7 @@
                        <li><% if (posts[i].image && posts[i].image.data.length > 0) {  %>
                                <img src="<%= posts[i].displayImage %>" style="height: 50px; width:50px"/>
                             <% } %>
-                       <%= posts[i].title %>
+                       <b> <%= posts[i].title %> </b>
                          <span>Created At <%= posts[i].created_at %> </span>
 
                              <div class="btn-group">
@@ -64,7 +64,7 @@
                     <% for(var i=0; i<posts.length; i++) {
                         for(var j=0; j<posts[i].comments.length;j++){ %>
                        <li>
-                           <%= posts[i].comments[j] %> 
+                            <div class="lead"><%= posts[i].comments[j].content %> </div><em> Added by <%= posts[i].comments[j].username %> on <%= posts[i].comments[j].date %> </em>
                             <a class="btn" href="/post/<%= posts[i].id %>">
                                 Related Post
                             </a>

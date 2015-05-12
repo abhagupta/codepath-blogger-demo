@@ -18,7 +18,7 @@
 
                 <ul>
                     <% for(var i=0; i<posts.length; i++) {%>
-                      <li><h4>  <%= posts[i].title %> </h4>
+                      <li><h6>  <a class="btn" href="/post/<%= posts[i].id %>"> <%= posts[i].title %> </a> </h6>
                        <hr>
                         <p>  <%= posts[i].content %> </p>
                        <% if (posts[i].image && posts[i].image.data.length > 0) {  %>
@@ -44,7 +44,7 @@
                             </form>
                              
                               <!--TO DO  creating and update dates-->
-                            
+                            <hr>
                            
                        </li>
                     <% } %>
