@@ -149,7 +149,6 @@ module.exports = (app) => {
 
     app.get('/deletePost/:postId', then(async(req, res) => {
         let postId = req.params.postId
-        console.log('Deleting the post id: ' + postId)
         let post = await Post.promise.findByIdAndRemove(postId)
         res.redirect('/profile')
 
@@ -196,7 +195,6 @@ module.exports = (app) => {
         if (!post) res.send(404, 'Not Found')
 
         let comment = req.body.comment
-        console.log('Comment : ' + comment)
 
         let newComment = {
             "content": comment,

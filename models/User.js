@@ -39,7 +39,6 @@ UserSchema.methods.validatePassword = async function (password) {
 UserSchema.pre('save', function(callback){
 	nodeify(async() => {
 		if(this.isModified('password')) {
-			console.log('generating password hash')
 			this.password = await this.generateHash(this.password)
 		}
 		console.log('Saving data')

@@ -20,8 +20,6 @@ require('songbird')
 
 const SALT = bcrypt.genSaltSync(10)
 
-console.log(SALT)
-
 mongoose.connect('mongodb://127.0.0.1:27017/blogger')
 
 

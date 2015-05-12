@@ -30,10 +30,7 @@ module.exports = (app) => {
 
     }, nodeifyit(async(username, password) => {
         let user
-        console.log(username + " , " + password)
-        console.log(username.indexOf('@'))
-        let email
-        if (username.indexOf('@') >= 0) {
+        le (username.indexOf('@') >= 0) {
 
             email = username.toLowerCase()
             user = await User.promise.findOne({
@@ -47,10 +44,10 @@ module.exports = (app) => {
                     $regex: regexp
                 }
             })
-            console.log("User foudn :" + user)
 
         }
-
+t email
+        if
         if (!email) {
             if (!user || username != user.username) {
                 return [false, {
@@ -126,7 +123,7 @@ module.exports = (app) => {
             return await user.save()
 
         } catch (e) {
-            console.log(util.inspect(e))
+            //console.log(util.inspect(e))
             return [false, {
                 message: e.message
             }]
